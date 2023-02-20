@@ -48,8 +48,8 @@ porechop = 'docker://quay.io/biocontainers/porechop:0.2.4--py39hc16433a_3'
 
 rule target:
     input:
+        'output/015_qc/guppy/summary.yaml',
         'output/015_qc/read_distribution.pdf',
-        'output/015_qc/combinedQC/summary.yaml',
         'output/processed_reads.fastq.gz'
 
 # process reads
