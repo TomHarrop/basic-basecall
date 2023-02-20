@@ -28,7 +28,7 @@ keep-going: true
 rerun-incomplete: true
 printshellcmds: true
 use-singularity: true
-singularity-args: "-B $PWD,$TMPDIR \
+singularity-args: "-B $PWD,$TMPDIR,/data \
                    --nv \
                    -H $(mktemp -d) \
                    --pwd $PWD \
