@@ -48,7 +48,7 @@ porechop = 'docker://quay.io/biocontainers/porechop:0.2.4--py39hc16433a_3'
 
 rule target:
     input:
-        'output/015_qc/combinedQC/read_distribution.pdf',
+        'output/015_qc/read_distribution.pdf',
         'output/015_qc/combinedQC/summary.yaml',
         'output/processed_reads.fastq.gz'
 
@@ -148,7 +148,7 @@ rule plot_read_distribution:
     input:
         seqsum = 'output/010_basecall/guppy/sequencing_summary.txt'
     output:
-        plot = 'output/015_qc/combinedQC/read_distribution.pdf'
+        plot = 'output/015_qc/read_distribution.pdf'
     threads:
         1
     container:
@@ -162,12 +162,14 @@ rule minionqc:
     input:
         'output/010_basecall/guppy/sequencing_summary.txt'
     output:
-        'output/015_qc/combinedQC/summary.yaml'
+        'output/015_qc/guppy/summary.yaml'
     params:
         search_dir = 'output/010_basecall/guppy',
         outdir = 'output/015_qc'
     threads:
         1
+    resources:
+        mem_mb = 8000
     container:
         minionqc
     log:
