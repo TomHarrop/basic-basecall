@@ -34,14 +34,12 @@ def aggregate_reads(wildcards):
 fast5_path = Path('data/reads').resolve()
 
 # CONTAINERS
+bioconductor = 'docker://ghcr.io/tomharrop/r-containers:bioconductor_3.17'
 biopython = 'docker://quay.io/biocontainers/biopython:1.78'
 guppy = 'docker://ghcr.io/tomharrop/container-guppy:v6.4.6_cv2'
+minionqc = 'shub://TomHarrop/ont-containers:minionqc_1.4.1'
 pigz = 'docker://quay.io/biocontainers/pigz:2.3.4'
 porechop = 'docker://quay.io/biocontainers/porechop:0.2.4--py39hc16433a_3'
-
-########
-# MAIN #
-########
 
 
 #########
@@ -50,8 +48,11 @@ porechop = 'docker://quay.io/biocontainers/porechop:0.2.4--py39hc16433a_3'
 
 rule target:
     input:
+        'output/015_qc/combinedQC/read_distribution.pdf',
+        'output/015_qc/combinedQC/summary.yaml',
         'output/processed_reads.fastq.gz'
 
+# process reads
 rule compress_processed_reads:
     input:
         'output/020_porechop/processed_reads.fastq'
@@ -140,6 +141,44 @@ rule gzip_fastq_file:
         '>{output} '
         '&& rm {input.read} '
         '&> {log}'
+
+
+# qc
+rule plot_read_distribution:
+    input:
+        seqsum = 'output/010_basecall/guppy/sequencing_summary.txt'
+    output:
+        plot = 'output/015_qc/combinedQC/read_distribution.pdf'
+    threads:
+        1
+    container:
+        bioconductor
+    log:
+        'output/logs/plot_read_distribution.log'
+    script:
+        'src/plot_read_distribution.R'
+
+rule minionqc:
+    input:
+        'output/010_basecall/guppy/sequencing_summary.txt'
+    output:
+        'output/015_qc/combinedQC/summary.yaml'
+    params:
+        search_dir = 'output/010_basecall/guppy',
+        outdir = 'output/015_qc'
+    threads:
+        1
+    container:
+        minionqc
+    log:
+        'output/logs/minionqc.log'
+    shell:
+        'MinIONQC.R '
+        '--processors={threads} '
+        '--input={params.search_dir} '
+        '--outputdirectory={params.outdir} '
+        '&> {log}'
+
 
 # generate a list of read IDs
 checkpoint generate_read_id_list:
