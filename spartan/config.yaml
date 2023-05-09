@@ -6,7 +6,7 @@ cluster:
     --partition={resources.partition}
     --cpus-per-task={threads}
     --mem={resources.mem_mb}
-    --{resources.gres_flag}
+    {resources.gres_flag}
     --job-name=smk-{rule}
     --output=logs/{rule}/{rule}-%j.out
     --parsable
