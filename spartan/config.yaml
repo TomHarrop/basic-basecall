@@ -6,10 +6,10 @@ cluster:
     --partition={resources.partition}
     --cpus-per-task={threads}
     --mem={resources.mem_mb}
+    --{resources.gres_flag}
     --job-name=smk-{rule}
     --output=logs/{rule}/{rule}-%j.out
     --parsable
-    # --gres={resources.gres}         # enable for GPU
 cluster-status:
   status-sacct-robust.sh
 default-resources:
@@ -17,7 +17,7 @@ default-resources:
   - mem_mb=4000
   - time=5
   - proj=punim1712
-  # - gres=' '         # enable for GPU
+  - gres_flag = ''
 restart-times: 0
 max-jobs-per-second: 50
 max-status-checks-per-second: 10
