@@ -216,9 +216,9 @@ rule guppy:
         3
     resources:
         partition = 'gpu-a100',
-        gres_flag = '--gres=gpu:1',
         time = 480 * 5,
-        mem_mb = 40000
+        mem_mb = 40000,
+        gres_flag = '--gres=gpu:1',
     container:
         guppy
     shell:
